@@ -3,12 +3,10 @@ use std::str::FromStr;
 use sqlx::types::BigDecimal;
 use time::OffsetDateTime;
 
-mod get_all_prices;
-mod get_latest_price_from_5_min;
+mod get_latest_price_from_12_min;
 mod insert_prices;
 
-pub use get_all_prices::{get_historical_prices_with_granularity, PricePointType};
-pub use get_latest_price_from_5_min::get_latest_price_within_10_minutes;
+pub use get_latest_price_from_12_min::get_latest_price_within_12_minutes;
 pub use insert_prices::insert_prices;
 
 use crate::{CurrentPrice, HistoricalPrice};

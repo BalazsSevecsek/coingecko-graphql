@@ -1,43 +1,5 @@
-// 'https://api.coingecko.com/api/v3/coins/zombie-inu-2/market_chart/range?vs_currency=usd&from=1689370624&to=1697319614
-//   /coins/{id}/market_chart/range
-/*
-{
-  "prices": [
-    [
-      1689379200000,
-      0.0010693574236728504
-    ],
-    [
-      1689465600000,
-      0.0010667337644652307
-    ],
-    [
-      1689552000000,
-      0.0010751823140497318
-    ],
-    [
-      1689638400000,
-      0.0010640355902136805
-    ],
-  ]
-}
-*/
-
-/**
- *
- *
- * Get historical market data include price, market cap, and 24h volume (granularity auto)
-
-Data granularity is automatic (cannot be adjusted)
-
-1 day from current time = 5 minute interval data
-2 - 90 days of date range = hourly data
-above 90 days of date range = daily data (00:00 UTC)
-Cache / Update Frequency: every 5 minutes.
-The last completed UTC day (00:00) is available 35 minutes after midnight on the next UTC day (00:35).
- */
 use crate::http_get::get;
-use log::{debug, error, info};
+use log::{error, info};
 use serde::Deserialize;
 use std::{env, error};
 use time::format_description::well_known;
@@ -80,8 +42,6 @@ pub async fn get_historical_price(
         .append_pair("from", &from.to_string())
         .append_pair("to", &to.to_string())
         .finish();
-
-    debug!("------------URL -----------{}", url.clone().to_string());
 
     let query_result: HistoricalData = get::<HistoricalData>(url, &user_error).await?;
 

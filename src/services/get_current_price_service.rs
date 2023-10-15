@@ -1,5 +1,5 @@
 use crate::{
-    api_calls, get_latest_price_within_10_minutes, insert_prices, CurrentPrice, CurrentPriceDto,
+    api_calls, get_latest_price_within_12_minutes, insert_prices, CurrentPrice, CurrentPriceDto,
     PriceInfoEntity, SymbolCache,
 };
 use anyhow::Result;
@@ -14,7 +14,7 @@ pub async fn get_current_price_service(
 ) -> Result<CurrentPriceDto, Box<dyn std::error::Error>> {
     return match symbol_cache.find_crypto_by_id(crypto_id.clone()) {
         Some(symbol_info) => {
-            let latest_from_within_10_minutes = get_latest_price_within_10_minutes(
+            let latest_from_within_10_minutes = get_latest_price_within_12_minutes(
                 db_connection,
                 crypto_id,
                 currency_ticker.clone(),

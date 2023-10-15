@@ -88,13 +88,6 @@ impl Subscription {
         let symbol_cache = ctx.data::<SymbolCache>().clone().unwrap();
 
         try_stream! {
-            // let mut interval_stream =
-            //     tokio_stream::wrappers::IntervalStream::new(tokio::time::interval(Duration::from_secs(60*5)));
-
-            // while let Some(_) = interval_stream.next().await{
-            //     let res = get_current_price_service(symbol_cache,db_connection,crypto_id.clone(),currency_ticker.clone()).await.ok();
-            //     yield res;
-            // };
             loop{
                 let res = get_current_price_service(symbol_cache,db_connection,crypto_id.clone(),currency_ticker.clone()).await.ok();
                 yield res;

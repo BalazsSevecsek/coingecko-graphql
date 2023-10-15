@@ -14,8 +14,6 @@ pub struct TokenInfo {
 pub async fn get_list_of_accepted_tickers_and_ids() -> Result<Vec<TokenInfo>, Box<dyn error::Error>>
 {
     let base_path: String = env::var("BASE_PATH").expect("No base path in env file");
-    // let api_key: String = env::var("API_KEY").expect("No api key in env file");
-    // url.set_query(Some(&format!("x_cg_pro_api_key={}", api_key)));
 
     let url_with_path = format!("{}/coins/list", base_path);
     let user_error = "Could not get list of tickers";

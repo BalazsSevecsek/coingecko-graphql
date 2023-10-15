@@ -1,12 +1,3 @@
-// https://api.coingecko.com/api/v3/simple/price?ids=zombie-inu-2&vs_currencies=usd
-/*Response:
-{
-  "zombie-inu-2": {
-    "usd": 0.00078097
-  }
-}
-*/
-
 use crate::http_get::get;
 use crate::PriceInfoEntity;
 use log::error;
