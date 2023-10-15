@@ -1,20 +1,25 @@
 extern crate log;
 
-use async_graphql::{http::GraphiQLSource, EmptyMutation, EmptySubscription, Schema};
-use async_graphql_axum::GraphQL;
+use async_graphql::{http::GraphiQLSource, EmptyMutation, Schema};
+use async_graphql_axum::{GraphQL, GraphQLSubscription};
 use axum::{
     response::{self, IntoResponse},
     routing::get,
     Router, Server,
 };
-use coingecko_graphql::{Query, SymbolCache};
+use coingecko_graphql::{Query, Subscription, SymbolCache};
 use env_logger::{Builder, Target};
 use log::info;
 use sqlx::postgres::PgPoolOptions;
 use std::{env, process::exit};
 
 async fn graphiql() -> impl IntoResponse {
-    response::Html(GraphiQLSource::build().endpoint("/graphiql").finish())
+    response::Html(
+        GraphiQLSource::build()
+            .endpoint("/")
+            .subscription_endpoint("/ws")
+            .finish(),
+    )
 }
 
 #[tokio::main]
@@ -42,17 +47,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cache = SymbolCache::populate().await?;
     info!("Populate symbol cache");
 
-    let schema: Schema<Query, EmptyMutation, EmptySubscription> =
-        Schema::build(Query, EmptyMutation, EmptySubscription)
+    let schema: Schema<Query, EmptyMutation, Subscription> =
+        Schema::build(Query, EmptyMutation, Subscription)
             .data(db_connection)
             .data(cache)
             .finish();
+
     info!("Graphql schema compiled");
 
-    let app: Router = Router::new().route(
-        "/graphiql",
-        get(graphiql).post_service(GraphQL::new(schema)),
-    );
+    let app: Router = Router::new()
+        .route(
+            "/",
+            get(graphiql).post_service(GraphQL::new(schema.clone())),
+        )
+        .route_service("/ws", GraphQLSubscription::new(schema));
+
     let server_future = Server::bind(&"127.0.0.1:8000".parse().unwrap())
         .serve(app.into_make_service())
         .with_graceful_shutdown(async move {
@@ -60,7 +69,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         });
 
     info!("Server started on http://localhost:{}", 8000);
-    info!("GraphiQL path: http://localhost:8000/graphiql");
 
     tokio::select! {
         _=tokio::signal::ctrl_c()=>{

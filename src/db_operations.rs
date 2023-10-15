@@ -7,13 +7,13 @@ mod get_all_prices;
 mod get_latest_price_from_5_min;
 mod insert_prices;
 
-pub use get_all_prices::get_prices;
-pub use get_latest_price_from_5_min::get_latest_price_within_5_minutes;
+pub use get_all_prices::{get_historical_prices_with_granularity, PricePointType};
+pub use get_latest_price_from_5_min::get_latest_price_within_10_minutes;
 pub use insert_prices::insert_prices;
 
-use crate::CurrentPrice;
+use crate::{CurrentPrice, HistoricalPrice};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct PriceInfoEntity {
     pub timestamp: OffsetDateTime,
     pub crypto_id: String,
@@ -28,6 +28,19 @@ impl From<CurrentPrice> for PriceInfoEntity {
             crypto_id: value.crypto_id,
             currency_ticker: value.currency_ticker,
             timestamp: OffsetDateTime::from_unix_timestamp(value.timestamp).unwrap(),
+            price: BigDecimal::from_str(&value.price.to_string()).unwrap(),
+        }
+    }
+}
+
+impl From<HistoricalPrice> for PriceInfoEntity {
+    fn from(value: HistoricalPrice) -> Self {
+        // let price_as_string = value.price.to_string();
+        PriceInfoEntity {
+            crypto_id: value.crypto_id,
+            currency_ticker: value.currency_ticker,
+            timestamp: OffsetDateTime::from_unix_timestamp(value.timestamp_milisecond / 1000)
+                .unwrap(),
             price: BigDecimal::from_str(&value.price.to_string()).unwrap(),
         }
     }

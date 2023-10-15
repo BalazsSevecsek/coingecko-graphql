@@ -24,7 +24,7 @@ Run the following commands:
 }
 ```
 
-Result:
+Query Result:
 
 ```
 {
@@ -50,7 +50,7 @@ Result:
 }
 ```
 
-Result:
+Query Result:
 
 ```
 {
@@ -65,3 +65,24 @@ Result:
 ```
 
 ### Get the historical prices
+
+```
+{
+  getHistoricalPrice(
+    cryptoId: "bitcoin"
+    currencyTicker: "usd"
+    from: "2023-09-01T00:00:00.12345Z"
+    to: "2022-10-15T00:00:00.12345Z"
+  ) {
+    cryptoId
+    currencyTicker
+    price
+  }
+}
+```
+
+Query Result:
+
+```
+
+```

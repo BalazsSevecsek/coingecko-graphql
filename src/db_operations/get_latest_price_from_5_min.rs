@@ -4,7 +4,7 @@ use sqlx::PgPool;
 
 use crate::db_operations::PriceInfoEntity;
 
-pub async fn get_latest_price_within_5_minutes(
+pub async fn get_latest_price_within_10_minutes(
     pool: &PgPool,
     crypto_id: String,
     currency_ticker: String,
@@ -16,7 +16,7 @@ pub async fn get_latest_price_within_5_minutes(
           FROM price_info
           WHERE crypto_id = $1
             AND currency_ticker = $2
-            AND timestamp >= NOW() - INTERVAL '5 minutes'
+            AND timestamp >= NOW() - INTERVAL '10 minutes'
           ORDER BY timestamp DESC
           LIMIT 1;
         "#,
