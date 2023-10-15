@@ -89,7 +89,7 @@ impl Subscription {
 
         try_stream! {
             loop{
-                let res = get_current_price_service(symbol_cache,db_connection,crypto_id.clone(),currency_ticker.clone()).await.ok();
+                let res = get_current_price_service(&symbol_cache.clone(),&db_connection.clone(),crypto_id.clone(),currency_ticker.clone()).await.ok();
                 yield res;
                 sleep(Duration::from_secs(3)).await;
             }
