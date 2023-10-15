@@ -17,6 +17,7 @@ pub struct Query;
 
 #[Object]
 impl Query {
+    #[graphql(cache_control(max_age = 3600))]
     pub async fn crypto_ticker_ids<'ctx>(
         &self,
         ctx: &Context<'ctx>,
@@ -28,6 +29,7 @@ impl Query {
         return Ok(res);
     }
 
+    #[graphql(cache_control(max_age = 300))]
     pub async fn get_current_price<'ctx>(
         &self,
         ctx: &Context<'ctx>,
@@ -44,6 +46,7 @@ impl Query {
         return Ok(res);
     }
 
+    #[graphql(cache_control(max_age = 600))]
     pub async fn get_historical_price<'ctx>(
         &self,
         ctx: &Context<'ctx>,
