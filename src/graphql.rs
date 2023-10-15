@@ -68,7 +68,7 @@ impl Query {
         .await
         .map_err(|err| async_graphql::Error::new(err.to_string()))?;
 
-        info!("Retrieved historical prices {:?}", res.len());
+        info!("Retrieved {:?} number of historical prices", res.len());
 
         return Ok(res);
     }

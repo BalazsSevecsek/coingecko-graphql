@@ -20,17 +20,6 @@ pub async fn get_current_price_service(
                 currency_ticker.clone(),
             )
             .await?;
-            // info!(
-            //     "------------latest_price {:?}",
-            //     latest_from_within_10_minutes
-            //         .clone()
-            //         .unwrap_or(PriceInfoEntity {
-            //             crypto_id: "".into(),
-            //             currency_ticker: "".into(),
-            //             price: BigDecimal::new(0.into(), 0),
-            //             timestamp: OffsetDateTime::now_utc()
-            //         })
-            // );
 
             if latest_from_within_10_minutes.is_some() {
                 info!("Fetch current price from DB");

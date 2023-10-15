@@ -21,7 +21,6 @@ pub struct PriceInfoEntity {
 
 impl From<CurrentPrice> for PriceInfoEntity {
     fn from(value: CurrentPrice) -> Self {
-        // let price_as_string = value.price.to_string();
         PriceInfoEntity {
             crypto_id: value.crypto_id,
             currency_ticker: value.currency_ticker,
@@ -33,7 +32,6 @@ impl From<CurrentPrice> for PriceInfoEntity {
 
 impl From<HistoricalPrice> for PriceInfoEntity {
     fn from(value: HistoricalPrice) -> Self {
-        // let price_as_string = value.price.to_string();
         PriceInfoEntity {
             crypto_id: value.crypto_id,
             currency_ticker: value.currency_ticker,
