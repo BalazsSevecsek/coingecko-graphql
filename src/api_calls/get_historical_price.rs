@@ -19,8 +19,8 @@ pub struct HistoricalPrice {
 }
 
 pub async fn get_historical_price(
-    crypto_id: &str,
-    currency_ticker: &str,
+    crypto_id: &'_ str,
+    currency_ticker: &'_ str,
     from: i64,
     to: i64,
 ) -> Result<Vec<HistoricalPrice>, Box<dyn error::Error>> {

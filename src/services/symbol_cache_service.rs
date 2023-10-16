@@ -2,13 +2,13 @@ use std::sync::Arc;
 
 use log::info;
 
-use crate::{get_list_of_accepted_tickers_and_ids, TokenInfo};
+use crate::{ApiCalls, ApiClient, TokenInfo};
 
 pub struct SymbolCache(Arc<Vec<TokenInfo>>);
 
 impl SymbolCache {
     pub async fn populate() -> Result<SymbolCache, Box<dyn std::error::Error>> {
-        let accepted_symbols = get_list_of_accepted_tickers_and_ids().await?;
+        let accepted_symbols = ApiClient::get_list_of_accepted_tickers_and_ids().await?;
         let cache = SymbolCache(Arc::new(accepted_symbols));
         return Ok(cache);
     }

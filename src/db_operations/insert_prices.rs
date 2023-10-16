@@ -20,13 +20,6 @@ pub async fn insert_prices(pool: &PgPool, prices: Vec<PriceInfoEntity>) -> anyho
         .push(" ON CONFLICT DO NOTHING; ");
 
     let query = query_builder.build();
-    // let sql_query = query.sql();
-
-    // info!(
-    //     "+++++++++++++++SQL QUERY {}",
-    //     sql_query,
-    //     // query.take_arguments().unwrap()
-    // );
 
     let num_of_rows = query.execute(pool).await?;
 

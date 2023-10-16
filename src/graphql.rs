@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use crate::{
     get_crypto_ids_service, get_current_price_service, get_historical_data_service,
-    CurrentPriceDto, HistoricalPriceDto, SymbolCache,
+    CurrentPriceDto, DbConnection, HistoricalPriceDto, SymbolCache,
 };
 use async_graphql::{Context, Object};
 use async_graphql::{Result, Subscription};
@@ -15,7 +15,7 @@ use tokio::time::sleep;
 
 pub struct Query;
 
-#[Object]
+#[Object(cache_control(max_age = 300))]
 impl Query {
     #[graphql(cache_control(max_age = 3600))]
     pub async fn crypto_ticker_ids<'ctx>(
@@ -36,7 +36,7 @@ impl Query {
         crypto_id: String,
         currency_ticker: String,
     ) -> Result<CurrentPriceDto> {
-        let db_connection = ctx.data::<Pool<Postgres>>().clone().unwrap();
+        let db_connection = ctx.data::<DbConnection>().clone().unwrap();
         let symbol_cache = ctx.data::<SymbolCache>().clone().unwrap();
         let res =
             get_current_price_service(symbol_cache, db_connection, crypto_id, currency_ticker)
@@ -55,7 +55,7 @@ impl Query {
         from: OffsetDateTime,
         to: OffsetDateTime,
     ) -> Result<Vec<HistoricalPriceDto>> {
-        let db_connection = ctx.data::<Pool<Postgres>>().clone().unwrap();
+        let db_connection = ctx.data::<DbConnection>().clone().unwrap();
         let symbol_cache = ctx.data::<SymbolCache>().clone().unwrap();
         let res = get_historical_data_service(
             symbol_cache,
@@ -84,7 +84,7 @@ impl Subscription {
         crypto_id: String,
         currency_ticker: String,
     ) -> impl Stream<Item = Result<Option<CurrentPriceDto>, String>> + 'a {
-        let db_connection = ctx.data::<Pool<Postgres>>().clone().unwrap();
+        let db_connection = ctx.data::<DbConnection>().clone().unwrap();
         let symbol_cache = ctx.data::<SymbolCache>().clone().unwrap();
 
         try_stream! {

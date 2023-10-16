@@ -7,7 +7,7 @@ use axum::{
     routing::get,
     Router, Server,
 };
-use coingecko_graphql::{Query, Subscription, SymbolCache};
+use coingecko_graphql::{DbConnection, Query, Subscription, SymbolCache};
 use env_logger::{Builder, Target};
 use log::info;
 use sqlx::postgres::PgPoolOptions;
@@ -44,12 +44,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     sqlx::migrate!().run(&db_connection).await?;
     info!("Migrations ran down");
 
+    let connection_wrapper = DbConnection::new(db_connection);
+
     let cache = SymbolCache::populate().await?;
     info!("Populate symbol cache");
 
     let schema: Schema<Query, EmptyMutation, Subscription> =
         Schema::build(Query, EmptyMutation, Subscription)
-            .data(db_connection)
+            .data(connection_wrapper)
             .data(cache)
             .finish();
 
