@@ -1,0 +1,37 @@
+name: general-rust-ci
+run-name: ${{github.ref_name}}-${{ github.actor }}-ci
+
+on: [push]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: [ubuntu-22.04]
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+      - name: install rust
+        uses: brndnmtthws/rust-action-rustup@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          components: rustfmt, clippy
+      - name: check
+        run: cargo check
+
+  test:
+    runs-on: [ubuntu-22.04]
+    needs: [check]
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+      - name: install rust
+        uses: brndnmtthws/rust-action-rustup@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          components: rustfmt, clippy
+      - name: test
+        run: cargo test
