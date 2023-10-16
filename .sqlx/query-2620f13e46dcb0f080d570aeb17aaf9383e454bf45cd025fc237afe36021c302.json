@@ -1,0 +1,41 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n          SELECT *\n          FROM price_info\n          WHERE crypto_id = $1\n            AND currency_ticker = $2\n            AND timestamp >= NOW() - INTERVAL '12 minutes'\n          ORDER BY timestamp DESC\n          LIMIT 1;\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "crypto_id",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "currency_ticker",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "timestamp",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 3,
+        "name": "price",
+        "type_info": "Numeric"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "2620f13e46dcb0f080d570aeb17aaf9383e454bf45cd025fc237afe36021c302"
+}
