@@ -18,5 +18,7 @@ jobs:
           toolchain: stable
           profile: minimal
           components: rustfmt, clippy
+      - name: Set SQLX_OFFLINE environment variable
+        run: echo "SQLX_OFFLINE=true" >> $GITHUB_ENV
       - name: test
         run: cargo test
