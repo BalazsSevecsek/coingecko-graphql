@@ -37,7 +37,7 @@ Run the following commands:
 
 ## Tests
 
-Two unit tests were written for the get_current_price_service.
+- Two unit tests were written for the get_current_price_service.
 
 ## Example queries
 
