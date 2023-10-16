@@ -1,10 +1,9 @@
 use crate::{
-    api_calls, ApiCalls, ApiClient, CurrentPrice, CurrentPriceDto, DbConnection, DbOperations,
+    ApiCalls, ApiClient, CurrentPrice, CurrentPriceDto, DbConnection, DbOperations,
     PriceInfoEntity, SymbolCache,
 };
 use anyhow::Result;
 use log::info;
-use sqlx::{Pool, Postgres};
 
 pub async fn get_current_price_service(
     symbol_cache: &SymbolCache,
@@ -31,7 +30,6 @@ pub async fn get_current_price_service(
                 ApiClient::get_current_price(&symbol_info.id, &currency_ticker).await?;
             let entity: PriceInfoEntity = current_price.clone().into();
 
-            // info!("API fetched {:?}", entity.clone());
             db_connection.insert_prices(vec![entity]).await?;
             return Ok(current_price.into());
         }

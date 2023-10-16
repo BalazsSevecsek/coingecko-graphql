@@ -9,7 +9,6 @@ use async_graphql::{Result, Subscription};
 use async_stream::try_stream;
 use futures_core::Stream;
 use log::info;
-use sqlx::{Pool, Postgres};
 use time::OffsetDateTime;
 use tokio::time::sleep;
 

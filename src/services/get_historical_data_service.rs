@@ -1,8 +1,7 @@
 use crate::{
-    api_calls, ApiCalls, ApiClient, DbConnection, DbOperations, HistoricalPriceDto,
-    PriceInfoEntity, SymbolCache,
+    ApiCalls, ApiClient, DbConnection, DbOperations, HistoricalPriceDto, PriceInfoEntity,
+    SymbolCache,
 };
-use sqlx::{Pool, Postgres};
 use time::OffsetDateTime;
 
 pub async fn get_historical_data_service(

@@ -9,7 +9,6 @@ pub async fn insert_prices(pool: &PgPool, prices: Vec<PriceInfoEntity>) -> anyho
         r#"INSERT INTO price_info("timestamp", "currency_ticker", "crypto_id", "price") "#,
     );
 
-    // Note that `.into_iter()` wasn't needed here since `users` is already an iterator.
     query_builder
         .push_values(prices, |mut b, price: PriceInfoEntity| {
             b.push_bind(price.timestamp)
