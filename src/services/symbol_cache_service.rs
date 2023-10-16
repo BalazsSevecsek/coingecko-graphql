@@ -1,27 +1,55 @@
 use std::sync::Arc;
 
 use log::info;
+use mockall::automock;
 
-use crate::{ApiCalls, ApiClient, TokenInfo};
+use crate::{ApiOperations, TokenInfo};
 
 pub struct SymbolCache(Arc<Vec<TokenInfo>>);
 
+#[cfg(test)]
+impl Default for SymbolCache {
+    fn default() -> Self {
+        SymbolCache(Arc::new(Vec::new()))
+    }
+}
+impl Clone for SymbolCache {
+    fn clone(&self) -> Self {
+        SymbolCache(self.0.clone())
+    }
+}
+
 impl SymbolCache {
-    pub async fn populate() -> Result<SymbolCache, Box<dyn std::error::Error>> {
-        let accepted_symbols = ApiClient::get_list_of_accepted_tickers_and_ids().await?;
+    pub fn new() -> Self {
+        SymbolCache(Arc::new(Vec::new()))
+    }
+
+    pub async fn populate(
+        &mut self,
+        api_calls: &impl ApiOperations,
+    ) -> Result<Self, Box<dyn std::error::Error>> {
+        let accepted_symbols = api_calls.get_list_of_accepted_tickers_and_ids().await?;
         let cache = SymbolCache(Arc::new(accepted_symbols));
         return Ok(cache);
     }
+}
 
-    pub fn find_crypto_by_id(&self, id: String) -> Option<&TokenInfo> {
-        let result = self.0.iter().find(|e| e.id == id);
+#[automock]
+pub trait SymbolCacheOperations {
+    fn get_list_of_ids_for_symbol(&self, symbol: String) -> Vec<String>;
+    fn find_crypto_by_id(&self, id: String) -> Option<TokenInfo>;
+}
+
+impl SymbolCacheOperations for SymbolCache {
+    fn find_crypto_by_id(&self, id: String) -> Option<TokenInfo> {
+        let result = self.0.iter().find(|e| e.id == id).map(|v| (*v).clone());
         if result.is_some() {
-            info!("cache hit: {:?}", result.unwrap());
+            info!("cache hit: {:?}", result.clone().unwrap());
         }
         return result;
     }
 
-    pub fn get_list_of_ids_for_symbol(&self, symbol: String) -> Vec<String> {
+    fn get_list_of_ids_for_symbol(&self, symbol: String) -> Vec<String> {
         return self
             .0
             .iter()

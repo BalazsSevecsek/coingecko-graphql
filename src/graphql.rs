@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 use crate::{
-    get_crypto_ids_service, get_current_price_service, get_historical_data_service,
+    get_crypto_ids_service, get_current_price_service, get_historical_data_service, ApiClient,
     CurrentPriceDto, DbConnection, HistoricalPriceDto, SymbolCache,
 };
 use async_graphql::{Context, Object};
@@ -37,10 +37,16 @@ impl Query {
     ) -> Result<CurrentPriceDto> {
         let db_connection = ctx.data::<DbConnection>().clone().unwrap();
         let symbol_cache = ctx.data::<SymbolCache>().clone().unwrap();
-        let res =
-            get_current_price_service(symbol_cache, db_connection, crypto_id, currency_ticker)
-                .await
-                .map_err(|err| async_graphql::Error::new(err.to_string()))?;
+        let api_caller: ApiClient = ApiClient;
+        let res = get_current_price_service(
+            symbol_cache,
+            db_connection,
+            api_caller,
+            crypto_id,
+            currency_ticker,
+        )
+        .await
+        .map_err(|err| async_graphql::Error::new(err.to_string()))?;
         info!("Retrieved current price {:?}", res);
         return Ok(res);
     }
@@ -56,9 +62,11 @@ impl Query {
     ) -> Result<Vec<HistoricalPriceDto>> {
         let db_connection = ctx.data::<DbConnection>().clone().unwrap();
         let symbol_cache = ctx.data::<SymbolCache>().clone().unwrap();
+        let api_caller: ApiClient = ApiClient;
         let res = get_historical_data_service(
             symbol_cache,
             db_connection,
+            api_caller,
             crypto_id,
             currency_ticker,
             from,
@@ -84,11 +92,11 @@ impl Subscription {
         currency_ticker: String,
     ) -> impl Stream<Item = Result<Option<CurrentPriceDto>, String>> + 'a {
         let db_connection = ctx.data::<DbConnection>().clone().unwrap();
-        let symbol_cache = ctx.data::<SymbolCache>().clone().unwrap();
-
+        let symbol_cache: &SymbolCache = ctx.data::<SymbolCache>().clone().unwrap();
+        let api_caller = ApiClient;
         try_stream! {
             loop{
-                let res = get_current_price_service(&symbol_cache.clone(),&db_connection.clone(),crypto_id.clone(),currency_ticker.clone()).await.ok();
+                let res = get_current_price_service(&symbol_cache.clone(),&db_connection.clone(), api_caller.clone(),crypto_id.clone(),currency_ticker.clone()).await.ok();
                 yield res;
                 sleep(Duration::from_secs(3)).await;
             }

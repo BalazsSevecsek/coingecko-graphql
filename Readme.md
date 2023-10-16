@@ -35,6 +35,10 @@ Run the following commands:
 - `install cargo install sqlx-cli`
 - `sqlx migrate run --database-url "postgres://user:pass@localhost/prices"`
 
+## Tests
+
+Two unit tests were written for the get_current_price_service.
+
 ## Example queries
 
 ### To get the cryptoIds pertaining to a crypto ticker such as "eth"

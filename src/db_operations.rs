@@ -1,6 +1,7 @@
 use std::str::FromStr;
 
 use async_trait::async_trait;
+use mockall::automock;
 use sqlx::{types::BigDecimal, PgPool};
 use time::OffsetDateTime;
 
@@ -15,6 +16,17 @@ pub struct PriceInfoEntity {
     pub crypto_id: String,
     pub currency_ticker: String,
     pub price: BigDecimal,
+}
+
+impl Default for PriceInfoEntity {
+    fn default() -> Self {
+        PriceInfoEntity {
+            timestamp: OffsetDateTime::now_utc(),
+            crypto_id: "".to_string(),
+            currency_ticker: "".to_string(),
+            price: BigDecimal::from_str("0").unwrap(),
+        }
+    }
 }
 
 impl From<CurrentPrice> for PriceInfoEntity {
@@ -40,14 +52,24 @@ impl From<HistoricalPrice> for PriceInfoEntity {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct DbConnection(PgPool);
 
+#[automock]
 impl DbConnection {
     pub fn new(pool: PgPool) -> Self {
         DbConnection(pool)
     }
+
+    // #[cfg(test)]
+    // pub fn new_internal() -> Self {
+    //     use std::sync::Arc;
+
+    //     DbConnection(Arc::new(Vec::new()))
+    // }
 }
 
+#[automock]
 #[async_trait]
 pub trait DbOperations {
     async fn get_latest_price_within_12_minutes(

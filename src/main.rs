@@ -7,7 +7,7 @@ use axum::{
     routing::get,
     Router, Server,
 };
-use coingecko_graphql::{DbConnection, Query, Subscription, SymbolCache};
+use coingecko_graphql::{ApiClient, DbConnection, Query, Subscription, SymbolCache};
 use env_logger::{Builder, Target};
 use log::info;
 use sqlx::postgres::PgPoolOptions;
@@ -46,7 +46,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let connection_wrapper = DbConnection::new(db_connection);
 
-    let cache = SymbolCache::populate().await?;
+    let cache = SymbolCache::new().populate(&ApiClient).await?;
     info!("Populate symbol cache");
 
     let schema: Schema<Query, EmptyMutation, Subscription> =

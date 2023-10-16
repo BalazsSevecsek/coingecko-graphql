@@ -4,7 +4,7 @@ use log::info;
 use serde::Deserialize;
 use std::{env, error};
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct TokenInfo {
     pub id: String,
     pub symbol: String,

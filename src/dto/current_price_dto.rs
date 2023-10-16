@@ -2,11 +2,21 @@ use async_graphql::SimpleObject;
 
 use crate::{CurrentPrice, PriceInfoEntity};
 
-#[derive(SimpleObject, Debug)]
+#[derive(SimpleObject, Debug, PartialEq)]
 pub struct CurrentPriceDto {
     pub crypto_id: String,
     pub currency_ticker: String,
     pub price: f64,
+}
+
+impl Default for CurrentPriceDto {
+    fn default() -> Self {
+        CurrentPriceDto {
+            crypto_id: "".to_string(),
+            currency_ticker: "".to_string(),
+            price: 0.0,
+        }
+    }
 }
 
 impl From<PriceInfoEntity> for CurrentPriceDto {

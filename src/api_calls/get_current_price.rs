@@ -17,7 +17,7 @@ struct PriceDataRow {
     last_updated_at: i64,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Default, PartialEq, PartialOrd)]
 pub struct CurrentPrice {
     pub crypto_id: String,
     pub currency_ticker: String,
