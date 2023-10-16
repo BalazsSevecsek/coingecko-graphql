@@ -9,7 +9,6 @@ permissions:
 jobs:
   test:
     runs-on: [ubuntu-22.04]
-    needs: [check]
     steps:
       - name: checkout code
         uses: actions/checkout@v3
